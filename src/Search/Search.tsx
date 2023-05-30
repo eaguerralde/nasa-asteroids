@@ -65,7 +65,7 @@ export function Search() {
       />
       </span>
       {searchError !== '' && <p>searchError: {searchError}</p>}
-      {neoResult?.near_earth_objects && <List neo={neoResult.near_earth_objects} />}
+      {neoResult?.near_earth_objects && <List neos={neoResult.near_earth_objects} />}
     </>
   );
 }
