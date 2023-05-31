@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NearEarthObject, NearEarthObjects } from '../NasaApi/types';
 import { ListItem } from './ListItem';
 import { Favourite } from '../Favourites/types';
@@ -6,9 +6,11 @@ import { Favourite } from '../Favourites/types';
 type ListProps = {
   neos: NearEarthObjects;
   favourites: Favourite[];
+  setFavourite: (neoId: string) => void;
+  unsetFavourite: (neoId: string) => void;
 };
 
-export function List({ neos, favourites }: ListProps) {
+export function List({ neos, favourites, setFavourite, unsetFavourite }: ListProps) {
   const allNeos: NearEarthObject[] = [];
   Object.keys(neos).forEach((neoDate) => allNeos.push(...neos[neoDate]));
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
@@ -20,9 +22,17 @@ export function List({ neos, favourites }: ListProps) {
     }
   }
   const [favList, setFavList] = useState(favourites.map(fav => fav.neoId));
-  const handleFavClick = (neoId: string) => {
-    
+  const handleFavClick = (neoId: string, isFavourite: boolean) => {
+    if (isFavourite) {
+      unsetFavourite(neoId);
+    } else {
+      setFavourite(neoId);
+    }
   }
+
+  useEffect(() => {
+    setFavList(favourites.map(fav => fav.neoId));
+  }, [favourites])
 
   return (
     <>
@@ -31,7 +41,9 @@ export function List({ neos, favourites }: ListProps) {
       <ul>
         {allNeos.map(neo => <li key={neo.id}>
           <span onClick={() => handleListClick(neo.id)}>{neo.name} {neo.id}</span> 
-          <button onClick={() => handleFavClick(neo.id)}>{ favList.includes(neo.id) ? 'Y' : 'N' }</button>
+          <button onClick={() => handleFavClick(neo.id, favList.includes(neo.id))}>
+            { favList.includes(neo.id) ? 'Y' : 'N' }
+          </button>
           {selectedItem === neo.id && <ListItem neo={neo} />}
         </li>)}
       </ul>

@@ -11,7 +11,6 @@ function validDateInput(dateString: string) {
   if (regex.test(dateString) && !isNaN(Date.parse(dateString))) {
     return true;
   } else {
-    console.log('invalid ' + dateString + ' ' + regex.test(dateString))
     return false
   };
 }
@@ -22,6 +21,7 @@ export function Search() {
   const [neoResult, setNeoResult] = useState<SearchResult>();
   const [favourites, setFavourites] = useState<Favourite[]>([]);
   const [favouritesError, setFavouritesError] = useState('');
+  const [updateFavourites, setUpdateFavourites] = useState('');
 
   const onChangeDate = (event: React.FormEvent<HTMLInputElement>) => {
     let searchParams = { ...neoSearchParams };
@@ -58,7 +58,29 @@ export function Search() {
     .catch((error) =>{
       setFavouritesError(error?.message);
     })
-  }, [])
+  }, [updateFavourites]);
+
+  const setFavourite = (neoId: string) => {
+    favouritesAoi.create({ neoId, userId: 1 })
+    .catch((error) =>{
+      setFavouritesError(error?.message);
+      setUpdateFavourites(Date.now().toString());
+    })
+    .finally(() => {
+      setUpdateFavourites(Date.now().toString());
+    })
+  }
+
+  const unsetFavourite = (neoId: string) => {
+    favouritesAoi.delete({ neoId, userId: 1 })
+    .catch((error) =>{
+      setFavouritesError(error?.message);
+      setUpdateFavourites(Date.now().toString());
+    })
+    .finally(() => {
+      setUpdateFavourites(Date.now().toString());
+    })
+  }
 
   return (
     <>
@@ -82,7 +104,12 @@ export function Search() {
       {favouritesError !== '' && <p>Favourites Error: {favouritesError}</p>}
       {searchError !== '' && <p>Search Error: {searchError}</p>}
       {neoResult?.near_earth_objects && 
-      <List neos={neoResult.near_earth_objects} favourites={favourites} />}
+      <List 
+        neos={neoResult.near_earth_objects} 
+        favourites={favourites} 
+        setFavourite={setFavourite}
+        unsetFavourite={unsetFavourite}
+      />}
     </>
   );
 }
