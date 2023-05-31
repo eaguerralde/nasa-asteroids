@@ -1,3 +1,13 @@
+# Setup
+
+Create a `.env` file at the root of the project and ad the following vars:
+
+Set to your personal NASA API key generated at [https://api.nasa.gov/?ref=its-foss](https://api.nasa.gov/?ref=its-foss).
+`REACT_APP_NASA_API_KEY`
+
+Set to the base URL of your running BE from [https://github.com/eaguerralde/nasa-asteroids-be](https://github.com/eaguerralde/nasa-asteroids-be), for example `http://localhost:3001`.
+`REACT_APP_FAVOURITES_BASE_URL`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
