@@ -38,12 +38,14 @@ export function List({ neos, favourites, setFavourite, unsetFavourite }: ListPro
     <>
       <h2>list</h2>
       <span>Favs: {JSON.stringify(favourites)}</span>
-      <ul>
+      <ul className="list">
         {allNeos.map(neo => <li key={neo.id}>
-          <span onClick={() => handleListClick(neo.id)}>{neo.name} {neo.id}</span> 
-          <button onClick={() => handleFavClick(neo.id, favList.includes(neo.id))}>
-            { favList.includes(neo.id) ? 'Y' : 'N' }
-          </button>
+          <span className="list-name" onClick={() => handleListClick(neo.id)}>{neo.name} {neo.id}</span> 
+          <button 
+            className={`list-fav-btn${favList.includes(neo.id) ? ' selected' : ''}`} 
+            role="button" 
+            onClick={() => handleFavClick(neo.id, favList.includes(neo.id))}
+          />
           {selectedItem === neo.id && <ListItem neo={neo} />}
         </li>)}
       </ul>
