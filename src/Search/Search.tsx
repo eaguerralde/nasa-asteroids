@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import nasaApi from '../NasaApi/nasaApi'
 import { List } from './List';
 import { SearchResult } from '../NasaApi/types';
+import favouritesAoi from '../Favourites/favouritesApi';
+import { Favourite } from '../Favourites/types';
 
 function validDateInput(dateString: string) {
   if (dateString === '') return true;
@@ -18,6 +20,8 @@ export function Search() {
   const [neoSearchParams, setNeoSearchParams] = useState({from: '', to: ''});
   const [searchError, setSearchError] = useState('');
   const [neoResult, setNeoResult] = useState<SearchResult>();
+  const [favourites, setFavourites] = useState<Favourite[]>([]);
+  const [favouritesError, setFavouritesError] = useState('');
 
   const onChangeDate = (event: React.FormEvent<HTMLInputElement>) => {
     let searchParams = { ...neoSearchParams };
@@ -45,6 +49,17 @@ export function Search() {
     }
   },[neoSearchParams]);
 
+  useEffect(() => {
+    favouritesAoi.read()
+    .then((res) =>{
+      setFavourites(res);
+      setFavouritesError('');
+    })
+    .catch((error) =>{
+      setFavouritesError(error?.message);
+    })
+  }, [])
+
   return (
     <>
       <h1>Search</h1>
@@ -64,8 +79,10 @@ export function Search() {
         id='searchTo'
       />
       </span>
-      {searchError !== '' && <p>searchError: {searchError}</p>}
-      {neoResult?.near_earth_objects && <List neos={neoResult.near_earth_objects} />}
+      {favouritesError !== '' && <p>Favourites Error: {favouritesError}</p>}
+      {searchError !== '' && <p>Search Error: {searchError}</p>}
+      {neoResult?.near_earth_objects && 
+      <List neos={neoResult.near_earth_objects} favourites={favourites} />}
     </>
   );
 }

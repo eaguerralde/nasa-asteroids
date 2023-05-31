@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NearEarthObject, NearEarthObjects } from '../NasaApi/types';
+import React from 'react';
+import { NearEarthObject } from '../NasaApi/types';
 
 type ListProps = {
   neo: NearEarthObject;
